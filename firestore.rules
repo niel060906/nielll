@@ -26,16 +26,8 @@ service cloud.firestore {
 
     // Videos collection
     match /videos/{videoId} {
-      // Public can read list and single documents
       allow read: if true;
-      
-      // Only admins can create, update, or delete
-      allow create: if isAdmin() && isValidVideo(request.resource.data);
-      allow update: if isAdmin() && (
-        // Allow all updates for admin if schema is valid
-        isValidVideo(request.resource.data)
-      );
-      allow delete: if isAdmin();
+      allow write: if isAdmin();
     }
   }
 }
