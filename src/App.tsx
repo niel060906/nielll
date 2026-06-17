@@ -4,6 +4,7 @@ import { Layout } from './components/Layout/Layout';
 import { Home } from './pages/Home';
 import { Watch } from './pages/Watch';
 import { Explore } from './pages/Explore';
+import { About } from './pages/About';
 import { AdminPanel } from './pages/Admin/AdminPanel';
 import { Dashboard as AdminDashboard } from './pages/Admin/Dashboard';
 import { UploadVideo as AdminUpload } from './pages/Admin/UploadVideo';
@@ -37,6 +38,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/watch/:id" element={<Watch />} />
             <Route path="/explore" element={<Explore />} />
+            <Route path="/about" element={<About />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/library" element={<Library />} />
             <Route path="/profile" element={<Profile />} />

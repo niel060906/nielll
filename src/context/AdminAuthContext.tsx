@@ -1,38 +1,64 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { 
+  User, 
+  signInWithPopup, 
+  GoogleAuthProvider, 
+  onAuthStateChanged, 
+  signOut 
+} from 'firebase/auth';
+import { auth } from '../lib/firebase';
 
 interface AdminAuthContextType {
+  user: User | null;
   isAuthenticated: boolean;
-  login: (password: string) => boolean;
-  logout: () => void;
+  isAdmin: boolean;
+  loading: boolean;
+  loginWithGoogle: () => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 const AdminAuthContext = createContext<AdminAuthContextType | undefined>(undefined);
 
-const ADMIN_PASSWORD = 'Ishnelsen060906';
-const AUTH_KEY = 'istream_admin_auth';
+// Whitelist of admin emails
+const ADMIN_EMAILS = [
+  'cristiandwihariantoro@gmail.com', // Primary Admin
+];
 
 export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return localStorage.getItem(AUTH_KEY) === 'true';
-  });
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const login = (password: string) => {
-    if (password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true);
-      localStorage.setItem(AUTH_KEY, 'true');
-      return true;
-    }
-    return false;
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const isAdmin = user ? ADMIN_EMAILS.includes(user.email || '') : false;
+  const isAuthenticated = !!user && isAdmin;
+
+  const loginWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    await signInWithPopup(auth, provider);
   };
 
-  const logout = () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem(AUTH_KEY);
+  const logout = async () => {
+    await signOut(auth);
   };
 
   return (
-    <AdminAuthContext.Provider value={{ isAuthenticated, login, logout }}>
-      {children}
+    <AdminAuthContext.Provider value={{ 
+      user, 
+      isAuthenticated, 
+      isAdmin, 
+      loading, 
+      loginWithGoogle, 
+      logout 
+    }}>
+      {!loading && children}
     </AdminAuthContext.Provider>
   );
 };

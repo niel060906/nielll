@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Compass, Search, ListVideo, User } from 'lucide-react';
+import { Home, Compass, Search, ListVideo, User, Info } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '../../lib/utils';
 import { motion } from 'motion/react';
@@ -11,6 +11,7 @@ export const BottomNav = () => {
     { icon: Home, label: 'Home', path: '/' },
     { icon: Compass, label: 'Explore', path: '/explore' },
     { icon: Search, label: 'Search', path: '/search' },
+    { icon: Info, label: 'About', path: '/about' },
     { icon: ListVideo, label: 'Admin', path: '/admin' },
     { icon: User, label: 'Profile', path: '/profile' },
   ];
@@ -24,7 +25,7 @@ export const BottomNav = () => {
             key={item.path} 
             to={item.path} 
             className={cn(
-              "flex flex-col items-center justify-center px-6 py-2.5 rounded-[24px] transition-all duration-300 relative",
+              "flex flex-col items-center justify-center px-4 py-2.5 rounded-[24px] transition-all duration-300 relative",
               isActive ? "bg-white/10 dark:bg-white/10 text-white" : "text-white/50 hover:text-white"
             )}
           >

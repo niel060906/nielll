@@ -55,9 +55,9 @@ export const AdminPanel = () => {
             variant="ghost" 
             size="sm" 
             className="flex items-center space-x-2 w-full justify-start text-red-500 hover:bg-red-500/10"
-            onClick={() => {
+            onClick={async () => {
               if (confirm('Terminate admin session?')) {
-                logout();
+                await logout();
                 window.location.href = '/';
               }
             }}

@@ -54,6 +54,9 @@ export const Navbar = () => {
           <Link to="/explore" className={cn("text-sm font-semibold transition-all duration-300", location.pathname === '/explore' ? "text-white scale-105" : "text-white/60 hover:text-white")}>
             Explore
           </Link>
+          <Link to="/about" className={cn("text-sm font-semibold transition-all duration-300", location.pathname === '/about' ? "text-white scale-105" : "text-white/60 hover:text-white")}>
+            About
+          </Link>
           <Link to="/admin" className={cn("text-sm font-semibold transition-all duration-300", location.pathname.startsWith('/admin') ? "text-white scale-105" : "text-white/60 hover:text-white")}>
             Admin
           </Link>

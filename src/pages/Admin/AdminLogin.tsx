@@ -1,29 +1,50 @@
 import React, { useState } from 'react';
-import { IOSTextField } from '../../components/IOS/IOSTextField';
 import { IOSButton } from '../../components/IOS/IOSButton';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Lock, AlertCircle, Play } from 'lucide-react';
+import { Lock, LogIn, AlertCircle, LogOut } from 'lucide-react';
 
 export const AdminLogin = () => {
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState(false);
-  const { login } = useAdminAuth();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const { loginWithGoogle, isAdmin, user, logout } = useAdminAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (login(password)) {
-      const from = (location.state as any)?.from?.pathname || '/admin/dashboard';
-      navigate(from, { replace: true });
-    } else {
-      setError(true);
-      setPassword('');
-      setTimeout(() => setError(false), 3000);
+  const handleLogin = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      await loginWithGoogle();
+    } catch (err: any) {
+      console.error(err);
+      if (err.code === 'auth/unauthorized-domain') {
+        setError('Unauthorized Domain: Please whitelist this URL in your Firebase Console (Authentication > Settings > Authorized Domains).');
+      } else if (err.code === 'auth/popup-closed-by-user') {
+        setError('Login cancelled. Please try again.');
+      } else {
+        setError('Authentication failed. Please check your connection and try again.');
+      }
+    } finally {
+      setLoading(false);
     }
   };
+
+  const handleSignOut = async () => {
+    setError(null);
+    await logout();
+  };
+
+  // If already logged in and is admin, redirect away
+  React.useEffect(() => {
+    if (user && isAdmin) {
+      const from = (location.state as any)?.from?.pathname || '/admin/dashboard';
+      navigate(from, { replace: true });
+    } else if (user && !isAdmin) {
+      setError(`Access Denied: ${user.email} is not authorized.`);
+    }
+  }, [user, isAdmin, navigate, location]);
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center p-4">
@@ -38,25 +59,52 @@ export const AdminLogin = () => {
           </div>
           <div className="space-y-1">
             <h1 className="text-3xl font-black tracking-tight">Mainframe Access</h1>
-            <p className="text-white/40 font-medium">Identity verification required</p>
+            <p className="text-white/40 font-medium">Verified Identity Required</p>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <IOSTextField 
-            type="password"
-            placeholder="System Access Key"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="text-center text-xl tracking-[0.5em]"
-            error={error ? "Invalid access key" : ""}
-            autoFocus
-          />
-          
-          <IOSButton type="submit" size="full" className="h-14 font-black tracking-widest uppercase">
-            Authorize Entry
+        <div className="space-y-6">
+          <p className="text-white/60 text-sm">
+            Only whitelisted administrators can access the global catalog management tools.
+          </p>
+
+          {error && (
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center space-x-2 text-red-400 bg-red-400/10 p-4 rounded-2xl text-sm font-medium border border-red-400/20"
+            >
+              <AlertCircle size={18} className="flex-shrink-0" />
+              <span>{error}</span>
+            </motion.div>
+          )}
+
+          <IOSButton 
+            onClick={handleLogin} 
+            disabled={loading}
+            size="full" 
+            className="h-14 font-black tracking-widest uppercase flex items-center justify-center space-x-3"
+          >
+            {loading ? (
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : (
+              <>
+                <LogIn size={20} />
+                <span>Sign in with Google</span>
+              </>
+            )}
           </IOSButton>
-        </form>
+
+          {user && !isAdmin && (
+            <button 
+              onClick={handleSignOut}
+              className="flex items-center justify-center space-x-2 text-white/40 hover:text-red-400 transition-colors w-full pt-2 group"
+            >
+              <LogOut size={16} className="group-hover:translate-x-1 transition-transform" />
+              <span className="text-xs font-bold uppercase tracking-widest">Sign out of {user.email}</span>
+            </button>
+          )}
+        </div>
 
         <div className="pt-4">
           <button 
