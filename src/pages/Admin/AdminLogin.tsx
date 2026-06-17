@@ -18,13 +18,15 @@ export const AdminLogin = () => {
     try {
       await loginWithGoogle();
     } catch (err: any) {
-      console.error(err);
+      console.error('Login Error:', err);
       if (err.code === 'auth/unauthorized-domain') {
-        setError('Unauthorized Domain: Please whitelist this URL in your Firebase Console (Authentication > Settings > Authorized Domains).');
+        setError(`DOMAIN NOT AUTHORIZED: The domain "${window.location.hostname}" is not whitelisted in your Firebase Console. Go to Authentication > Settings > Authorized Domains and add it.`);
       } else if (err.code === 'auth/popup-closed-by-user') {
-        setError('Login cancelled. Please try again.');
+        setError('Login popup was closed. Please try again.');
+      } else if (err.code === 'auth/internal-error') {
+        setError('Firebase Internal Error. This often happens if the Google Sign-In method is not enabled in the Firebase Console.');
       } else {
-        setError('Authentication failed. Please check your connection and try again.');
+        setError(err.message || 'Authentication failed. Please check your connection.');
       }
     } finally {
       setLoading(false);
@@ -90,19 +92,29 @@ export const AdminLogin = () => {
             ) : (
               <>
                 <LogIn size={20} />
-                <span>Sign in with Google</span>
+                <span>{user ? 'Switch Account' : 'Sign in with Google'}</span>
               </>
             )}
           </IOSButton>
 
-          {user && !isAdmin && (
-            <button 
-              onClick={handleSignOut}
-              className="flex items-center justify-center space-x-2 text-white/40 hover:text-red-400 transition-colors w-full pt-2 group"
-            >
-              <LogOut size={16} className="group-hover:translate-x-1 transition-transform" />
-              <span className="text-xs font-bold uppercase tracking-widest">Sign out of {user.email}</span>
-            </button>
+          {user && (
+            <div className="space-y-4 pt-2">
+              {!isAdmin && (
+                <div className="text-red-400 text-xs font-bold bg-red-400/5 p-3 rounded-xl border border-red-400/10">
+                  Logged in as: <span className="text-white underline">{user.email}</span>
+                  <br />
+                  <span className="mt-1 block opacity-60">This email is not in the admin whitelist.</span>
+                </div>
+              )}
+              
+              <button 
+                onClick={handleSignOut}
+                className="flex items-center justify-center space-x-2 text-white/40 hover:text-red-400 transition-colors w-full group"
+              >
+                <LogOut size={16} className="group-hover:translate-x-1 transition-transform" />
+                <span className="text-xs font-bold uppercase tracking-widest">Sign out of {user.email}</span>
+              </button>
+            </div>
           )}
         </div>
 

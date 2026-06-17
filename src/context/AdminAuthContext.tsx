@@ -36,7 +36,7 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     return () => unsubscribe();
   }, []);
 
-  const isAdmin = user ? ADMIN_EMAILS.includes(user.email || '') : false;
+  const isAdmin = user ? ADMIN_EMAILS.map(e => e.toLowerCase()).includes(user.email?.toLowerCase() || '') : false;
   const isAuthenticated = !!user && isAdmin;
 
   const loginWithGoogle = async () => {
