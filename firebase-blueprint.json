@@ -1,0 +1,50 @@
+{
+  "entities": {
+    "video": {
+      "title": "Video",
+      "description": "Metadata for a video in the streaming platform",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the video"
+        },
+        "video_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Direct URL to the MP4 video file"
+        },
+        "thumbnail_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to the video thumbnail image"
+        },
+        "views": {
+          "type": "integer",
+          "description": "Number of times the video has been played"
+        },
+        "likes": {
+          "type": "integer",
+          "description": "Number of likes the video has received"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update"
+        }
+      },
+      "required": ["title", "video_url", "thumbnail_url", "views", "likes", "created_at", "updated_at"]
+    }
+  },
+  "firestore": {
+    "/videos/{videoId}": {
+      "schema": "video",
+      "description": "Collection of all videos"
+    }
+  }
+}

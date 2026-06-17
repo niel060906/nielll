@@ -1,0 +1,50 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --radius-ios: 20px;
+  --radius-ios-lg: 28px;
+  --color-ios-blue: #0A84FF;
+  --color-ios-light-bg: #FFFFFF;
+  --color-ios-light-surface: #F5F5F7;
+  --color-ios-dark-bg: #000000;
+  --color-ios-dark-surface: #171717;
+}
+
+@layer base {
+  body {
+    @apply font-sans antialiased text-black dark:text-white bg-ios-light-bg dark:bg-ios-dark-bg transition-colors duration-500;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply backdrop-blur-2xl bg-white/50 dark:bg-black/40 border border-white/20 dark:border-white/10;
+  }
+  
+  .glass-dark {
+    @apply backdrop-blur-2xl bg-black/60 border border-white/10;
+  }
+
+  .ios-shadow {
+    box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.08);
+  }
+
+  .ios-shadow-lg {
+    box-shadow: 0 12px 48px -12px rgba(0, 0, 0, 0.16);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Custom Video Player styles */
+video::-webkit-media-controls {
+  display: none !important;
+}

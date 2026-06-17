@@ -1,0 +1,6 @@
+{
+  "name": "iStream iOS",
+  "description": "Premium video streaming platform with a native iOS design system, featuring glassmorphism, smooth animations, and a powerful admin dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
