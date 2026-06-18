@@ -1,61 +1,50 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { 
-  User, 
-  signInWithPopup, 
-  GoogleAuthProvider, 
-  onAuthStateChanged, 
-  signOut 
-} from 'firebase/auth';
-import { auth } from '../lib/firebase';
 
 interface AdminAuthContextType {
-  user: User | null;
   isAuthenticated: boolean;
-  isAdmin: boolean;
   loading: boolean;
-  loginWithGoogle: () => Promise<void>;
+  login: (password: string) => Promise<boolean>;
   logout: () => Promise<void>;
 }
 
 const AdminAuthContext = createContext<AdminAuthContextType | undefined>(undefined);
 
-// Whitelist of admin emails
-const ADMIN_EMAILS = [
-  'cristiandwihariantoro@gmail.com', // Primary Admin
-];
-
 export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
 
+  // Use a simple session persistence
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
-    return () => unsubscribe();
+    const session = localStorage.getItem('admin_session');
+    if (session === 'true') {
+      setIsAuthenticated(true);
+    }
+    setLoading(false);
   }, []);
 
-  const isAdmin = user ? ADMIN_EMAILS.map(e => e.toLowerCase()).includes(user.email?.toLowerCase() || '') : false;
-  const isAuthenticated = !!user && isAdmin;
-
-  const loginWithGoogle = async () => {
-    const provider = new GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
-    await signInWithPopup(auth, provider);
+  const login = async (password: string) => {
+    // In a real app, this would be a server-side hash check
+    // Using environment variable for simple configuration
+    const correctPassword = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
+    
+    if (password === correctPassword) {
+      setIsAuthenticated(true);
+      localStorage.setItem('admin_session', 'true');
+      return true;
+    }
+    return false;
   };
 
   const logout = async () => {
-    await signOut(auth);
+    setIsAuthenticated(false);
+    localStorage.removeItem('admin_session');
   };
 
   return (
     <AdminAuthContext.Provider value={{ 
-      user, 
       isAuthenticated, 
-      isAdmin, 
       loading, 
-      loginWithGoogle, 
+      login, 
       logout 
     }}>
       {!loading && children}

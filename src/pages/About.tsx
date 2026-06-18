@@ -21,17 +21,17 @@ export const About = () => {
       >
         {/* Hero Section */}
         <div className="text-center space-y-6">
-          <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-ios-blue to-purple-600 p-1 shadow-2xl mb-4">
-            <div className="w-full h-full rounded-full bg-black flex items-center justify-center overflow-hidden">
-              <span className="text-4xl font-black italic tracking-tighter text-white">N</span>
+          <div className="inline-flex items-center justify-center w-28 h-28 rounded-[38%] bg-gradient-to-br from-ios-blue via-purple-600 to-pink-500 p-1 shadow-2xl mb-4 rotate-3 hover:rotate-0 transition-transform duration-500">
+            <div className="w-full h-full rounded-[36%] bg-black flex items-center justify-center overflow-hidden">
+              <span className="text-5xl font-black italic tracking-tighter text-white transform -skew-x-12">N</span>
             </div>
           </div>
-          <h1 className="text-5xl md:text-7xl font-black tracking-tighter">
-            About <span className="text-ios-blue italic">Nell</span>
+          <h1 className="text-6xl md:text-8xl font-black tracking-tighter">
+            About <span className="text-ios-blue italic animate-pulse">Nell</span>
           </h1>
           <p className="text-xl text-white/60 font-medium max-w-2xl mx-auto leading-relaxed">
             Unveiling a curated experience of cinematic moments and digital artistry. 
-            iStream+ is more than a platform; it's a movement driven by passion.
+            iStream+ is a movement driven by vision and passion for premium content.
           </p>
         </div>
 
@@ -41,14 +41,14 @@ export const About = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="glass rounded-[40px] p-10 border-white/5 space-y-4"
+            className="glass rounded-[40px] p-10 border-white/5 space-y-4 hover:bg-white/5 transition-colors"
           >
             <div className="w-12 h-12 bg-ios-blue/20 rounded-2xl flex items-center justify-center text-ios-blue mb-2">
               <Globe size={24} />
             </div>
-            <h3 className="text-2xl font-bold">Content Disclaimer</h3>
+            <h3 className="text-2xl font-bold">Content Curation</h3>
             <p className="text-white/50 leading-loose">
-              All videos showcased on this platform are meticulously sourced from various global platforms to provide a unified, premium viewing experience. We celebrate creators worldwide.
+              Semua video didapatkan dari berbagai platform global. Kami mengkurasi momen-momen terbaik untuk memberikan pengalaman menonton yang seamless dalam satu interface yang modern.
             </p>
           </motion.div>
 
@@ -56,38 +56,44 @@ export const About = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
-            className="glass rounded-[40px] p-10 border-white/5 space-y-4"
+            className="glass rounded-[40px] p-10 border-white/5 space-y-4 hover:bg-white/5 transition-colors"
           >
             <div className="w-12 h-12 bg-purple-500/20 rounded-2xl flex items-center justify-center text-purple-400 mb-2">
               <Heart size={24} />
             </div>
-            <h3 className="text-2xl font-bold">The Vision</h3>
+            <h3 className="text-2xl font-bold">The Nell Vision</h3>
             <p className="text-white/50 leading-loose">
-              Nell's vision for iStream+ is to bridge the gap between fragmented content sources and a seamless, high-fidelity user interface that feels like the future of entertainment.
+              Visi Nell untuk iStream+ adalah menjembatani konten yang terfragmentasi dengan antarmuka high-fidelity yang terasa seperti masa depan hiburan digital.
             </p>
           </motion.div>
         </div>
 
         {/* Socials */}
-        <div className="pt-12 text-center space-y-8">
-          <h4 className="text-xs font-black uppercase tracking-[0.3em] text-white/40">Connect with the community</h4>
-          <div className="flex flex-wrap justify-center gap-4">
+        <div className="pt-12 text-center space-y-10">
+          <div className="space-y-2">
+            <h4 className="text-xs font-black uppercase tracking-[0.4em] text-ios-blue">Follow Medsos Kami</h4>
+            <p className="text-white/30 text-sm italic">Jangan lupa mengikuti media sosial kami untuk update terbaru</p>
+          </div>
+          
+          <div className="flex flex-wrap justify-center gap-6">
             {socials.map((social, index) => (
               <motion.a
                 key={social.label}
                 href={social.link}
-                whileHover={{ scale: 1.05, y: -5 }}
+                whileHover={{ scale: 1.1, y: -8 }}
                 whileTap={{ scale: 0.95 }}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.4 + (index * 0.1) }}
                 className={cn(
-                  "flex items-center space-x-3 px-8 py-4 rounded-full border border-white/10 font-bold transition-all hover:border-white/30",
-                  social.color.replace('bg-', 'hover:bg-') + "/20 hover:text-white text-white/70"
+                  "flex flex-col items-center space-y-3 p-6 rounded-[32px] border border-white/5 transition-all bg-white/5",
+                  "hover:border-white/20 hover:bg-white/10 group select-none cursor-pointer"
                 )}
               >
-                <social.icon size={20} />
-                <span>{social.label}</span>
+                <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-xl transition-all group-hover:scale-110", social.color)}>
+                  <social.icon size={24} />
+                </div>
+                <span className="text-xs font-bold uppercase tracking-widest text-white/40 group-hover:text-white">{social.label}</span>
               </motion.a>
             ))}
           </div>

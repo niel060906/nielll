@@ -7,17 +7,6 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
-    // Helper functions
-    function isSignedIn() {
-      return request.auth != null;
-    }
-
-    function isAdmin() {
-      return isSignedIn() && (
-        request.auth.token.email == 'cristiandwihariantoro@gmail.com'
-      );
-    }
-
     function isValidVideo(data) {
       return data.title is string && data.title.size() <= 200 &&
              data.video_url is string && data.video_url.size() <= 1000 &&
@@ -26,8 +15,9 @@ service cloud.firestore {
 
     // Videos collection
     match /videos/{videoId} {
-      allow read: if true;
-      allow write: if isAdmin();
+      // Allowing public read and write since the user switched to a custom password system
+      // and disabled standard Firebase Authentication for login simplicity.
+      allow read, write: if true;
     }
   }
 }
